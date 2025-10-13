@@ -14,6 +14,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 1. Clone the Repository
 
    git clone git@github.com:your-email/UNT-Events-App.git
+   
    cd UNTEvents
 
 2. Install dependencies
