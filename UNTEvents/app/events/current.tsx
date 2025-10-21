@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useEvents } from '../_layout';
 
 // Sample events data
 const POPULAR_EVENTS = [
@@ -19,6 +20,9 @@ const POPULAR_EVENTS = [
     description: 'Every Monday at 7:30 pm, located at the UNT Library. Come join us as we discuss and enjoy reading!',
     image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
     category: 'Academic',
+    date: '2025-10-20',
+    time: '7:30 PM',
+    location: 'UNT Library',
   },
   {
     id: '2',
@@ -26,6 +30,9 @@ const POPULAR_EVENTS = [
     description: 'Every Friday at 2:00 PM come join us at the union for the annual UNT career fair. We will have free food and SWAG for students !!',
     image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400',
     category: 'Professional',
+    date: '2025-10-22',
+    time: '2:00 PM',
+    location: 'University Union',
   },
   {
     id: '3',
@@ -33,6 +40,9 @@ const POPULAR_EVENTS = [
     description: 'Every Sunday at 7:00 PM at the rec center. Come learn about what we do and become a part of the Mean Green Racing Crew',
     image: 'https://images.unsplash.com/photo-1471479917193-f00955256257?w=400',
     category: 'Sports',
+    date: '2025-10-24',
+    time: '7:00 PM',
+    location: 'Rec Center',
   },
   {
     id: '4',
@@ -40,27 +50,31 @@ const POPULAR_EVENTS = [
     description: 'Come join the Rugby club! We meet every Thursdays at 6:00 PM',
     image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400',
     category: 'Sports',
+    date: '2025-10-25',
+    time: '6:00 PM',
+    location: 'Sports Complex',
   },
 ];
 
 export default function CurrentEventsScreen() {
   const router = useRouter();
+  const { toggleSaveEvent, isEventSaved } = useEvents();
 
   return (
     <>
-     <Stack.Screen
-  options={{
-    title: 'Popular Events',
-    headerStyle: {
-      backgroundColor: '#00853E',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-    headerBackTitleVisible: false,
-  }}
-/>
+      <Stack.Screen
+        options={{
+          title: 'Popular Events',
+          headerStyle: {
+            backgroundColor: '#00853E',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerBackTitleVisible: false,
+        }}
+      />
       <View style={styles.container}>
         <Text style={styles.header}>Popular Events</Text>
         
@@ -69,28 +83,44 @@ export default function CurrentEventsScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {POPULAR_EVENTS.map((event) => (
-            <TouchableOpacity
-              key={event.id}
-              style={styles.eventCard}
-              onPress={() => router.push({ pathname: '/event/[id]', params: { id: event.id } })}
-            >
-              <Image 
-                source={{ uri: event.image }} 
-                style={styles.eventImage}
-                resizeMode="cover"
-              />
-              <View style={styles.eventContent}>
-                <Text style={styles.eventTitle}>{event.title}</Text>
-                <Text style={styles.eventDescription}>{event.description}</Text>
+          {POPULAR_EVENTS.map((event) => {
+            const isSaved = isEventSaved(event.id);
+            
+            return (
+              <View key={event.id} style={styles.eventCard}>
+                <TouchableOpacity
+                  onPress={() => router.push({ pathname: '/event/[id]', params: { id: event.id } })}
+                >
+                  <Image 
+                    source={{ uri: event.image }} 
+                    style={styles.eventImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.eventContent}>
+                    <Text style={styles.eventTitle}>{event.title}</Text>
+                    <Text style={styles.eventDescription}>{event.description}</Text>
+                  </View>
+                </TouchableOpacity>
+                
+                {/* Like Button */}
+                <TouchableOpacity
+                  style={styles.likeButton}
+                  onPress={() => toggleSaveEvent(event)}
+                >
+                  <Ionicons 
+                    name={isSaved ? 'heart' : 'heart-outline'} 
+                    size={28} 
+                    color={isSaved ? '#FF0000' : '#fff'} 
+                  />
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          ))}
+            );
+          })}
         </ScrollView>
 
         <TouchableOpacity 
           style={styles.categoriesButton}
-          onPress={() => router.push('/events/categories')}
+          onPress={() => router.push('/events/categories' as any)}
         >
           <Text style={styles.categoriesButtonText}>Browse by Categories</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" />
@@ -123,7 +153,8 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     width: 300,
     marginRight: 15,
-    overflow: 'hidden',
+    overflow: 'visible',
+    position: 'relative',
   },
   eventImage: {
     width: '100%',
@@ -144,6 +175,16 @@ const styles = StyleSheet.create({
     color: '#333',
     lineHeight: 20,
   },
+  likeButton: {
+  position: 'absolute',
+  bottom: 10,
+  right: 10,
+  backgroundColor: 'rgba(0, 133, 62, 0.9)',
+  borderRadius: 20,
+  padding: 8,
+  borderWidth: 2,
+  borderColor: '#000',
+},
   categoriesButton: {
     backgroundColor: '#006B32',
     margin: 20,

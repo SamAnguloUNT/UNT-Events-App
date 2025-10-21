@@ -41,13 +41,13 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#00853E',
-    paddingHorizontal: 20,
-    justifyContent: 'space-between',
-    paddingTop: 100,
-    paddingBottom: 80,
-  },
+  flex: 1,
+  backgroundColor: '#00853E',
+  paddingHorizontal: 20,
+  justifyContent: 'space-between',
+  paddingTop: 40,
+  paddingBottom: 80,
+},
   header: {
     alignItems: 'center',
   },
