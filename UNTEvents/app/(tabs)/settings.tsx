@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -19,6 +20,9 @@ const SettingsItem = ({ icon, title, onPress }: SettingsItemProps) => (
 );
 
 export default function SettingsScreen() {
+  const router = useRouter();
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
   return (
     <ScrollView style={styles.container}>
       {/* Account Section */}
@@ -44,30 +48,31 @@ export default function SettingsScreen() {
       {/* Notifications Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Notifications</Text>
-        <SettingsItem 
-          icon="notifications-outline" 
-          title="Turn On/Off Notifications"
-          onPress={() => console.log('Notifications')}
-        />
-        <SettingsItem 
-          icon="people-outline" 
-          title="Club Updates"
-          onPress={() => console.log('Club Updates')}
-        />
-        <SettingsItem 
-          icon="calendar-outline" 
-          title="Event Reminders"
-          onPress={() => console.log('Event Reminders')}
-        />
+        <View style={styles.notificationToggle}>
+          <View style={styles.toggleLeft}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="notifications-outline" size={20} color="#000" />
+            </View>
+            <Text style={styles.settingsText}>
+              Notifications {notificationsEnabled ? 'On' : 'Off'}
+            </Text>
+          </View>
+          <Switch
+  value={notificationsEnabled}
+  onValueChange={setNotificationsEnabled}
+  trackColor={{ false: '#fff', true: '#000' }}
+  thumbColor={notificationsEnabled ? '#fff' : '#000'}
+/>
+        </View>
       </View>
 
       {/* Support Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
         <SettingsItem 
-          icon="help-circle-outline" 
-          title="FAQs"
-          onPress={() => console.log('FAQs')}
+         icon="help-circle-outline" 
+         title="FAQs"
+          onPress={() => router.push('/settings/faqs' as any)}
         />
         <SettingsItem 
           icon="call-outline" 
@@ -119,6 +124,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 10,
+  },
+  notificationToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#00853E',
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 10,
+  },
+  toggleLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   iconContainer: {
     width: 24,
