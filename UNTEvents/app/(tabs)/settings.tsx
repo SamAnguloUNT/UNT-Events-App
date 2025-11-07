@@ -75,9 +75,9 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/faqs' as any)}
         />
         <SettingsItem 
-          icon="call-outline" 
+         icon="call-outline" 
           title="Contact Us"
-          onPress={() => console.log('Contact Us')}
+        onPress={() => router.push('/settings/contact' as any)}
         />
       </View>
 
