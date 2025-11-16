@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -111,6 +111,32 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/privacy-policy')}
         />
       </View>
+      {/* Logout Section */}
+<View style={styles.section}>
+  <TouchableOpacity 
+    style={styles.logoutButton}
+    onPress={() => {
+      Alert.alert(
+        'Logout',
+        'Are you sure you want to logout?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Logout',
+            style: 'destructive',
+            onPress: () => router.push('/login' as any),
+          },
+        ]
+      );
+    }}
+  >
+    <Ionicons name="log-out-outline" size={20} color="#FF0000" />
+    <Text style={styles.logoutText}>Logout</Text>
+  </TouchableOpacity>
+</View>
     </ScrollView>
   );
 }
@@ -167,4 +193,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#fff',
   },
+  logoutButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#00853E',
+  borderWidth: 2,
+  borderColor: '#FF0000',
+  borderRadius: 8,
+  padding: 16,
+  marginBottom: 30,
+  gap: 10,
+},
+logoutText: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#FF0000',
+},
 });
