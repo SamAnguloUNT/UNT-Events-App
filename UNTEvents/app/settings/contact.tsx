@@ -1,15 +1,15 @@
+import { Ionicons } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Alert,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { Stack } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function ContactUsScreen() {
   const [name, setName] = useState('');
@@ -24,21 +24,18 @@ export default function ContactUsScreen() {
       return;
     }
 
-    // Validate email format
     if (!email.includes('@')) {
       Alert.alert('Error', 'Please enter a valid email address');
       return;
     }
 
-    // For frontend demo - just show success message
     Alert.alert(
       'Message Sent!',
-      'Thank you for contacting us. We\'ll get back to you within 24-48 hours.',
+      "Thank you for contacting us. We'll get back to you within 24–48 hours.",
       [
         {
           text: 'OK',
           onPress: () => {
-            // Clear form
             setName('');
             setEmail('');
             setSubject('');
@@ -51,30 +48,27 @@ export default function ContactUsScreen() {
 
   return (
     <>
+      {/* (Optional) navigation header styling – safe to leave here */}
       <Stack.Screen
         options={{
           title: 'Contact Us',
-          headerStyle: {
-            backgroundColor: '#00853E',
-          },
+          headerStyle: { backgroundColor: '#00853E' },
           headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerBackTitleVisible: false,
+          headerTitleStyle: { fontWeight: 'bold' },
         }}
       />
+
       <ScrollView style={styles.container}>
-        {/* Header Section */}
+        {/* Header section */}
         <View style={styles.header}>
           <Ionicons name="mail-outline" size={48} color="#00853E" />
           <Text style={styles.headerTitle}>Get in Touch</Text>
           <Text style={styles.headerSubtitle}>
-            Have a question or feedback? We'd love to hear from you!
+            Have a question or feedback? We&apos;d love to hear from you!
           </Text>
         </View>
 
-        {/* Contact Methods */}
+        {/* Contact methods card */}
         <View style={styles.contactMethodsContainer}>
           <View style={styles.contactMethod}>
             <Ionicons name="mail" size={24} color="#00853E" />
@@ -96,16 +90,18 @@ export default function ContactUsScreen() {
             <Ionicons name="location" size={24} color="#00853E" />
             <View style={styles.contactMethodText}>
               <Text style={styles.contactMethodLabel}>Office</Text>
-              <Text style={styles.contactMethodValue}>University Union, Room 330</Text>
+              <Text style={styles.contactMethodValue}>
+                University Union, Room 330
+              </Text>
             </View>
           </View>
         </View>
 
-        {/* Contact Form */}
+        {/* Contact form card */}
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>Send us a message</Text>
 
-          {/* Name Input */}
+          {/* Name */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Name</Text>
             <TextInput
@@ -117,7 +113,7 @@ export default function ContactUsScreen() {
             />
           </View>
 
-          {/* Email Input */}
+          {/* Email */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -131,7 +127,7 @@ export default function ContactUsScreen() {
             />
           </View>
 
-          {/* Subject Input */}
+          {/* Subject */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Subject</Text>
             <TextInput
@@ -143,7 +139,7 @@ export default function ContactUsScreen() {
             />
           </View>
 
-          {/* Message Input */}
+          {/* Message */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Message</Text>
             <TextInput
@@ -158,7 +154,7 @@ export default function ContactUsScreen() {
             />
           </View>
 
-          {/* Submit Button */}
+          {/* Submit button */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Send Message</Text>
           </TouchableOpacity>
@@ -167,7 +163,7 @@ export default function ContactUsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            We typically respond within 24-48 hours
+            We typically respond within 24–48 hours
           </Text>
         </View>
       </ScrollView>

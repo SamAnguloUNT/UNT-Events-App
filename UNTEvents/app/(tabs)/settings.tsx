@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -10,7 +10,15 @@ interface SettingsItemProps {
 }
 
 const SettingsItem = ({ icon, title, onPress }: SettingsItemProps) => (
-  <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
+  <TouchableOpacity
+    style={styles.settingsItem}
+    onPress={() => {
+      console.log('Pressed settings item:', title);
+      if (onPress) {
+        onPress();
+      }
+    }}
+  >
     <View style={styles.iconContainer}>
       <Ionicons name={icon} size={20} color="#000" />
     </View>
@@ -18,6 +26,7 @@ const SettingsItem = ({ icon, title, onPress }: SettingsItemProps) => (
     <Ionicons name="chevron-forward" size={20} color="#666" />
   </TouchableOpacity>
 );
+
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -28,20 +37,23 @@ export default function SettingsScreen() {
       {/* Account Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account</Text>
-        <SettingsItem 
-          icon="person-circle-outline" 
+
+        <SettingsItem
+          icon="person-circle-outline"
           title="Edit Profile"
-          onPress={() => console.log('Edit Profile')}
+          onPress={() => router.push('/settings/edit-profile')}
         />
-        <SettingsItem 
-          icon="mail-outline" 
+
+        <SettingsItem
+          icon="mail-outline"
           title="Linked UNT Email"
-          onPress={() => console.log('Linked UNT Email')}
+          onPress={() => router.push('/settings/linked-email')}
         />
-        <SettingsItem 
-          icon="lock-closed-outline" 
+
+        <SettingsItem
+          icon="lock-closed-outline"
           title="Change Password"
-          onPress={() => console.log('Change Password')}
+          onPress={() => router.push('/settings/change-password')}
         />
       </View>
 
@@ -58,41 +70,45 @@ export default function SettingsScreen() {
             </Text>
           </View>
           <Switch
-  value={notificationsEnabled}
-  onValueChange={setNotificationsEnabled}
-  trackColor={{ false: '#fff', true: '#000' }}
-  thumbColor={notificationsEnabled ? '#fff' : '#000'}
-/>
+            value={notificationsEnabled}
+            onValueChange={setNotificationsEnabled}
+            trackColor={{ false: '#fff', true: '#000' }}
+            thumbColor={notificationsEnabled ? '#fff' : '#000'}
+          />
         </View>
       </View>
 
       {/* Support Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
-        <SettingsItem 
-         icon="help-circle-outline" 
-         title="FAQs"
-          onPress={() => router.push('/settings/faqs' as any)}
+
+        <SettingsItem
+          icon="help-circle-outline"
+          title="FAQs"
+          onPress={() => router.push('/settings/faqs')}
         />
-        <SettingsItem 
-         icon="call-outline" 
+
+        <SettingsItem
+          icon="call-outline"
           title="Contact Us"
-        onPress={() => router.push('/settings/contact' as any)}
+          onPress={() => router.push('/settings/contact')}
         />
       </View>
 
       {/* Privacy & Permissions Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Privacy & Permissions</Text>
-        <SettingsItem 
-          icon="location-outline" 
+
+        <SettingsItem
+          icon="location-outline"
           title="Location Services"
-          onPress={() => console.log('Location Services')}
+          onPress={() => router.push('/settings/location-services')}
         />
-        <SettingsItem 
-          icon="shield-checkmark-outline" 
+
+        <SettingsItem
+          icon="shield-checkmark-outline"
           title="Privacy Policy"
-          onPress={() => console.log('Privacy Policy')}
+          onPress={() => router.push('/settings/privacy-policy')}
         />
       </View>
     </ScrollView>
