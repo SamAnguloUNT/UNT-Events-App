@@ -70,11 +70,44 @@ export default function SettingsScreen() {
             </Text>
           </View>
           <Switch
-            value={notificationsEnabled}
-            onValueChange={setNotificationsEnabled}
-            trackColor={{ false: '#fff', true: '#000' }}
-            thumbColor={notificationsEnabled ? '#fff' : '#000'}
-          />
+  value={notificationsEnabled}
+  onValueChange={(value) => {
+    if (value) {
+      Alert.alert(
+        'Enable Notifications',
+        'You will receive notifications about upcoming events, reminders, and club updates.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Enable',
+            onPress: () => setNotificationsEnabled(true),
+          },
+        ]
+      );
+    } else {
+      Alert.alert(
+        'Disable Notifications',
+        'You will no longer receive notifications about events. You can turn them back on anytime.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Disable',
+            style: 'destructive',
+            onPress: () => setNotificationsEnabled(false),
+          },
+        ]
+      );
+    }
+  }}
+  trackColor={{ false: '#fff', true: '#000' }}
+  thumbColor={notificationsEnabled ? '#fff' : '#666'}
+/>
         </View>
       </View>
 
@@ -197,7 +230,7 @@ const styles = StyleSheet.create({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: '#00853E',
+  backgroundColor: '#fff',
   borderWidth: 2,
   borderColor: '#FF0000',
   borderRadius: 8,
@@ -208,6 +241,6 @@ const styles = StyleSheet.create({
 logoutText: {
   fontSize: 16,
   fontWeight: 'bold',
-  color: '#FF0000',
+  color: '#000',
 },
 });

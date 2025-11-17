@@ -98,6 +98,14 @@ export default function LoginScreen() {
           <Text style={styles.loginButtonText}>Continue</Text>
         </TouchableOpacity>
 
+         {/* Temporary Skip Button - Remove before production */}
+         <TouchableOpacity 
+         style={styles.skipButton} 
+          onPress={() => router.replace('/(tabs)' as any)}
+         >
+       <Text style={styles.skipButtonText}>Skip Login (Dev Only)</Text>
+       </TouchableOpacity>
+
         {/* Terms */}
         <Text style={styles.termsText}>
           By clicking continue, you agree to our{' '}
@@ -192,4 +200,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     textDecorationLine: 'underline',
   },
+  skipButton: {
+  backgroundColor: '#FFD700',
+  borderRadius: 8,
+  borderWidth: 2,
+  borderColor: '#000',
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginBottom: 20,
+},
+skipButtonText: {
+  color: '#000',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
 });
