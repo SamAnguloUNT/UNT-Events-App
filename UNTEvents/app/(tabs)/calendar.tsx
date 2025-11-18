@@ -3,38 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
-// Sample events with dates
-const CALENDAR_EVENTS = [
-  {
-    id: '1',
-    title: 'Football Game',
-    time: '8pm',
-    date: '2025-11-20',
-    image: 'https://images.unsplash.com/photo-1471479917193-f00955256257?w=400',
-  },
-  {
-    id: '2',
-    title: 'Free Food',
-    time: '5pm',
-    date: '2025-11-20',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400',
-  },
-  {
-    id: '3',
-    title: 'Career Fair',
-    time: '2:00 PM',
-    date: '2025-11-22',
-    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400',
-  },
-  {
-    id: '4',
-    title: 'Jazz Concert',
-    time: '8:00 PM',
-    date: '2025-11-25',
-    image: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400',
-  },
-];
+import { UNT_EVENTS } from '@/data/events';
 
 export default function CalendarScreen() {
   const router = useRouter();
@@ -46,11 +15,11 @@ export default function CalendarScreen() {
   const [selectedDate, setSelectedDate] = useState(todayString);
 
   // Get events for selected date
-  const eventsForDate = CALENDAR_EVENTS.filter(event => event.date === selectedDate);
+  const eventsForDate = UNT_EVENTS.filter(event => event.date === selectedDate);
 
   // Mark dates that have events
   const markedDates: any = {};
-  CALENDAR_EVENTS.forEach(event => {
+  UNT_EVENTS.forEach(event => {
     markedDates[event.date] = { marked: true, dotColor: '#00853E' };
   });
   
@@ -130,6 +99,9 @@ export default function CalendarScreen() {
               <View style={styles.eventInfo}>
                 <Text style={styles.eventTitle}>{event.title}</Text>
                 <Text style={styles.eventTime}>{event.time}</Text>
+                <Text style={styles.eventLocation} numberOfLines={1}>
+                  <Ionicons name="location-outline" size={12} color="#666" /> {event.location}
+                </Text>
               </View>
               <Ionicons name="chevron-forward" size={24} color="#666" />
             </TouchableOpacity>
@@ -231,6 +203,11 @@ const styles = StyleSheet.create({
   },
   eventTime: {
     fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  eventLocation: {
+    fontSize: 12,
     color: '#666',
   },
   noEvents: {

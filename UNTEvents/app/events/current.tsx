@@ -11,54 +11,18 @@ import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEvents } from '../_layout';
-
-// Sample events data
-const POPULAR_EVENTS = [
-  {
-    id: '1',
-    title: 'Book Club',
-    description: 'Every Monday at 7:30 pm, located at the UNT Library. Come join us as we discuss and enjoy reading!',
-    image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
-    category: 'Academic',
-    date: '2025-10-20',
-    time: '7:30 PM',
-    location: 'UNT Library',
-  },
-  {
-    id: '2',
-    title: 'Career Fair',
-    description: 'Every Friday at 2:00 PM come join us at the union for the annual UNT career fair. We will have free food and SWAG for students !!',
-    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400',
-    category: 'Professional',
-    date: '2025-10-22',
-    time: '2:00 PM',
-    location: 'University Union',
-  },
-  {
-    id: '3',
-    title: 'Mean Green Racing',
-    description: 'Every Sunday at 7:00 PM at the rec center. Come learn about what we do and become a part of the Mean Green Racing Crew',
-    image: 'https://images.unsplash.com/photo-1471479917193-f00955256257?w=400',
-    category: 'Sports',
-    date: '2025-10-24',
-    time: '7:00 PM',
-    location: 'Rec Center',
-  },
-  {
-    id: '4',
-    title: 'Rugby Club',
-    description: 'Come join the Rugby club! We meet every Thursdays at 6:00 PM',
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400',
-    category: 'Sports',
-    date: '2025-10-25',
-    time: '6:00 PM',
-    location: 'Sports Complex',
-  },
-];
+import { UNT_EVENTS } from '@/data/events';
 
 export default function CurrentEventsScreen() {
   const router = useRouter();
   const { toggleSaveEvent, isEventSaved } = useEvents();
+
+  // Get the next 6 upcoming events
+  const today = new Date();
+  const upcomingEvents = UNT_EVENTS
+    .filter(event => new Date(event.date) >= today)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 6);
 
   return (
     <>
@@ -83,7 +47,7 @@ export default function CurrentEventsScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {POPULAR_EVENTS.map((event) => {
+          {upcomingEvents.map((event) => {
             const isSaved = isEventSaved(event.id);
             
             return (
@@ -98,7 +62,15 @@ export default function CurrentEventsScreen() {
                   />
                   <View style={styles.eventContent}>
                     <Text style={styles.eventTitle}>{event.title}</Text>
-                    <Text style={styles.eventDescription}>{event.description}</Text>
+                    <Text style={styles.eventDescription} numberOfLines={3}>
+                      {event.description}
+                    </Text>
+                    <View style={styles.eventMeta}>
+                      <Ionicons name="calendar-outline" size={14} color="#666" />
+                      <Text style={styles.metaText}>{event.date}</Text>
+                      <Ionicons name="time-outline" size={14} color="#666" style={{marginLeft: 12}} />
+                      <Text style={styles.metaText}>{event.time}</Text>
+                    </View>
                   </View>
                 </TouchableOpacity>
                 
@@ -174,17 +146,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     lineHeight: 20,
+    marginBottom: 8,
+  },
+  eventMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 4,
+  },
+  metaText: {
+    fontSize: 12,
+    color: '#666',
   },
   likeButton: {
-  position: 'absolute',
-  bottom: 10,
-  right: 10,
-  backgroundColor: 'rgba(0, 133, 62, 0.9)',
-  borderRadius: 20,
-  padding: 8,
-  borderWidth: 2,
-  borderColor: '#000',
-},
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'rgba(0, 133, 62, 0.9)',
+    borderRadius: 20,
+    padding: 8,
+    borderWidth: 2,
+    borderColor: '#000',
+  },
   categoriesButton: {
     backgroundColor: '#006B32',
     margin: 20,

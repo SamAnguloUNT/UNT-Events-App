@@ -33,7 +33,7 @@ const CATEGORIES = [
   },
   {
     id: '5',
-    name: 'Other Events',
+    name: 'Student Life',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
   },
 ];
@@ -44,18 +44,18 @@ export default function CategoriesScreen() {
   return (
     <>
       <Stack.Screen
-  options={{
-    title: 'Categories',
-    headerStyle: {
-      backgroundColor: '#00853E',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
-    headerBackTitleVisible: false,
-  }}
-/>
+        options={{
+          title: 'Categories',
+          headerStyle: {
+            backgroundColor: '#00853E',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerBackTitleVisible: false,
+        }}
+      />
       <View style={styles.container}>
         <Text style={styles.header}>Categories</Text>
         
@@ -65,8 +65,10 @@ export default function CategoriesScreen() {
               key={category.id}
               style={styles.categoryCard}
               onPress={() => {
-                // Navigation will be added later
-                console.log('Selected category:', category.name);
+                router.push({
+                  pathname: '/events/category/[name]' as any,
+                  params: { name: category.name.replace('\n', ' ') }
+                });
               }}
             >
               <Image 
