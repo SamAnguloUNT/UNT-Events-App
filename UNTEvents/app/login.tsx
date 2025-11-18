@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -52,10 +53,14 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>UNT EVENTS</Text>
-          <Text style={styles.subtitle}>Sign in with your UNT account</Text>
-        </View>
+       <View style={styles.header}>
+       <Image 
+       source={require('../assets/images/Events Logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+        />
+        <Text style={styles.subtitle}>Sign in with your UNT account</Text>
+       </View>
 
         {/* Email Input */}
         <View style={styles.inputContainer}>
@@ -213,5 +218,10 @@ skipButtonText: {
   color: '#000',
   fontSize: 16,
   fontWeight: 'bold',
+},
+logo: {
+  width: 350,
+  height: 250,
+  marginBottom: 10,
 },
 });
