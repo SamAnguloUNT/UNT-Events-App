@@ -44,6 +44,14 @@ export default function EventDetailsScreen() {
     );
   };
 
+  const handleCategoryPress = () => {
+    // Navigate to the category detail screen
+    router.push({
+      pathname: '/events/category/[name]',
+      params: { name: event.category }
+    });
+  };
+
   return (
     <>
       <Stack.Screen
@@ -71,9 +79,13 @@ export default function EventDetailsScreen() {
 
         {/* Event Header */}
         <View style={styles.header}>
-          <View style={styles.categoryBadge}>
+          <TouchableOpacity 
+            style={styles.categoryBadge}
+            onPress={handleCategoryPress}
+            activeOpacity={0.7}
+          >
             <Text style={styles.categoryText}>{event.category}</Text>
-          </View>
+          </TouchableOpacity>
           
           <View style={styles.titleRow}>
             <Text style={styles.eventTitle}>{event.title}</Text>
