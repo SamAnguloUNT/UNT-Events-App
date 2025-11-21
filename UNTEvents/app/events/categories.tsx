@@ -14,27 +14,22 @@ const CATEGORIES = [
   {
     id: '1',
     name: 'Academic &\nProfessional',
-    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400',
+    image: 'https://localist-images.azureedge.net/photos/38634541580877/card/a64add19c9d3ed2046a534737069f482cb18f776.jpg',
   },
   {
     id: '2',
     name: 'Sports',
-    image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400',
+    image: 'https://localist-images.azureedge.net/photos/38555966483930/card/c60d4c09e39290ad10f14e95d46259bed405a722.jpg',
   },
   {
     id: '3',
     name: 'Arts &\nEntertainment',
-    image: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400',
+    image: 'https://localist-images.azureedge.net/photos/39131136456949/card/2dce9ed653365183e1e70b2e6d1b261dd09f486a.jpg',
   },
   {
     id: '4',
-    name: 'Clubs',
-    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400',
-  },
-  {
-    id: '5',
     name: 'Student Life',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
+    image: 'https://localist-images.azureedge.net/photos/50592626822705/card/211dcdc3d73670b4cf7617b243771a4d224ae5b7.jpg',
   },
 ];
 

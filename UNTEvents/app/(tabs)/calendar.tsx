@@ -20,7 +20,7 @@ export default function CalendarScreen() {
   // Mark dates that have events
   const markedDates: any = {};
   UNT_EVENTS.forEach(event => {
-    markedDates[event.date] = { marked: true, dotColor: '#00853E' };
+    markedDates[event.date] = { marked: true, dotColor: '#FFD700' };
   });
   
   // Highlight selected date
@@ -44,12 +44,18 @@ export default function CalendarScreen() {
     <View style={styles.container}>
       {/* Search and Filter Buttons */}
       <View style={styles.topButtons}>
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity 
+          style={styles.searchButton}
+          onPress={() => router.push('/search')}
+        >
           <Ionicons name="search" size={20} color="#000" />
           <Text style={styles.buttonText}>Search</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity 
+          style={styles.filterButton}
+          onPress={() => router.push('/events/categories')}
+        >
           <Ionicons name="filter" size={20} color="#000" />
           <Text style={styles.buttonText}>Filter</Text>
         </TouchableOpacity>
