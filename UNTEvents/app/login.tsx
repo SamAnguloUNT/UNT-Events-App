@@ -9,120 +9,167 @@ import {
   Platform,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { signIn, signUp } from '@/services/authService';
 
 export default function LoginScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+  const [displayName, setDisplayName] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // Validate email
-    if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your UNT email');
+  const handleAuth = async () => {
+    // Validation
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter email and password');
       return;
     }
 
-    if (!email.toLowerCase().endsWith('@my.unt.edu')) {
-      Alert.alert('Invalid Email', 'Please use your UNT email (@my.unt.edu)');
+    if (isSignUp && !displayName) {
+      Alert.alert('Error', 'Please enter your name');
       return;
     }
 
-    // Validate password
-    if (!password) {
-      Alert.alert('Error', 'Please enter your password');
-      return;
-    }
+    setLoading(true);
 
-    // For frontend demo - just navigate to main app
-    Alert.alert('Success', 'Login successful!', [
-      {
-        text: 'OK',
-        onPress: () => router.replace('/(tabs)' as any),
-      },
-    ]);
+    try {
+      let result;
+      
+      if (isSignUp) {
+        // Sign up new user
+        result = await signUp(email, password, displayName);
+      } else {
+        // Sign in existing user
+        result = await signIn(email, password);
+      }
+
+      if (result.success) {
+        // Navigate to main app
+        router.replace('/(tabs)');
+      } else {
+        // Convert Firebase errors to user-friendly messages
+        let errorMessage = result.error || 'Authentication failed';
+        
+        if (errorMessage.includes('auth/invalid-credential') || 
+            errorMessage.includes('auth/wrong-password') ||
+            errorMessage.includes('auth/user-not-found')) {
+          errorMessage = 'Incorrect email or password. Please try again.';
+        } else if (errorMessage.includes('auth/email-already-in-use')) {
+          errorMessage = 'This email is already registered. Please sign in instead.';
+        } else if (errorMessage.includes('auth/weak-password')) {
+          errorMessage = 'Password is too weak. Please use at least 6 characters.';
+        } else if (errorMessage.includes('auth/invalid-email')) {
+          errorMessage = 'Invalid email address. Please check and try again.';
+        } else if (errorMessage.includes('auth/too-many-requests')) {
+          errorMessage = 'Too many failed attempts. Please try again later.';
+        } else if (errorMessage.includes('auth/network-request-failed')) {
+          errorMessage = 'Network error. Please check your internet connection.';
+        }
+        
+        Alert.alert('Error', errorMessage);
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSkip = () => {
+    router.replace('/(tabs)');
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
         {/* Header */}
-       <View style={styles.header}>
-       <Image 
-       source={require('../assets/images/Events Logo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-        />
-        <Text style={styles.subtitle}>Sign in with your UNT account</Text>
-       </View>
+        <View style={styles.header}>
+          <Image 
+            source={require('../assets/images/Events Logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.subtitle}>
+            {isSignUp ? 'Create your account' : 'Sign in with your UNT account'}
+          </Text>
+        </View>
 
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={20} color="#666" style={styles.inputIcon} />
+        {/* Form */}
+        <View style={styles.form}>
+          {isSignUp && (
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              placeholderTextColor="#999"
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoCapitalize="words"
+            />
+          )}
+
           <TextInput
             style={styles.input}
-            placeholder="Enter your UNT email"
+            placeholder="Email"
             placeholderTextColor="#999"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            autoComplete="email"
+            autoCorrect={false}
           />
-        </View>
 
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
             placeholder="Password"
             placeholderTextColor="#999"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={!showPassword}
+            secureTextEntry
             autoCapitalize="none"
           />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons 
-              name={showPassword ? 'eye-off-outline' : 'eye-outline'} 
-              size={20} 
-              color="#666" 
-            />
+
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleAuth}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.loginButtonText}>
+                {isSignUp ? 'Sign Up' : 'Sign In'}
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Toggle Sign In / Sign Up */}
+          <TouchableOpacity
+            style={styles.toggleButton}
+            onPress={() => setIsSignUp(!isSignUp)}
+          >
+            <Text style={styles.toggleButtonText}>
+              {isSignUp 
+                ? 'Already have an account? Sign In' 
+                : "Don't have an account? Sign Up"}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Skip Button (Dev Only) */}
+          <TouchableOpacity
+            style={styles.skipButton}
+            onPress={handleSkip}
+          >
+            <Text style={styles.skipButtonText}>Skip Login (Dev Only)</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Continue</Text>
-        </TouchableOpacity>
-
-         {/* Temporary Skip Button - Remove before production */}
-         <TouchableOpacity 
-         style={styles.skipButton} 
-          onPress={() => router.replace('/(tabs)' as any)}
-         >
-       <Text style={styles.skipButtonText}>Skip Login (Dev Only)</Text>
-       </TouchableOpacity>
-
-        {/* Terms */}
-        <Text style={styles.termsText}>
-          By clicking continue, you agree to our{' '}
-          <Text style={styles.termsLink}>Terms of Service</Text>
-          {' '}and{' '}
-          <Text style={styles.termsLink}>Privacy Policy</Text>
-        </Text>
-
-        {/* Help Link */}
-        <TouchableOpacity style={styles.helpButton}>
-          <Text style={styles.helpText}>Need help signing in?</Text>
-        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -140,88 +187,62 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 40,
   },
-  title: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#fff',
-    letterSpacing: 3,
-    marginBottom: 10,
+  logo: {
+    width: 250,
+    height: 150,
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 16,
-    color: '#a8d5a8',
+    color: '#fff',
     textAlign: 'center',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#000',
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    height: 55,
-  },
-  inputIcon: {
-    marginRight: 10,
+  form: {
+    width: '100%',
   },
   input: {
-    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 10,
     fontSize: 16,
-    color: '#000',
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: '#000',
   },
   loginButton: {
     backgroundColor: '#000',
-    borderRadius: 8,
-    paddingVertical: 16,
+    paddingVertical: 15,
+    borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#000',
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  termsText: {
-    fontSize: 12,
-    color: '#a8d5a8',
-    textAlign: 'center',
-    lineHeight: 18,
-    marginBottom: 20,
-  },
-  termsLink: {
-    textDecorationLine: 'underline',
-  },
-  helpButton: {
+  toggleButton: {
+    marginTop: 20,
     alignItems: 'center',
-    padding: 10,
   },
-  helpText: {
-    fontSize: 14,
+  toggleButtonText: {
     color: '#fff',
+    fontSize: 14,
     textDecorationLine: 'underline',
   },
   skipButton: {
-  backgroundColor: '#FFD700',
-  borderRadius: 8,
-  borderWidth: 2,
-  borderColor: '#000',
-  paddingVertical: 12,
-  alignItems: 'center',
-  marginBottom: 20,
-},
-skipButtonText: {
-  color: '#000',
-  fontSize: 16,
-  fontWeight: 'bold',
-},
-logo: {
-  width: 350,
-  height: 250,
-  marginBottom: 10,
-},
+    marginTop: 30,
+    alignItems: 'center',
+    padding: 10,
+  },
+  skipButtonText: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });
