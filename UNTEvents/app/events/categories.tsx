@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 
@@ -51,39 +52,46 @@ export default function CategoriesScreen() {
           headerBackTitleVisible: false,
         }}
       />
-      <View style={styles.container}>
-        <Text style={styles.header}>Categories</Text>
-        
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {CATEGORIES.map((category) => (
-            <TouchableOpacity
-              key={category.id}
-              style={styles.categoryCard}
-              onPress={() => {
-                router.push({
-                  pathname: '/events/category/[name]' as any,
-                  params: { name: category.name.replace('\n', ' ') }
-                });
-              }}
-            >
-              <Image 
-                source={{ uri: category.image }} 
-                style={styles.categoryImage}
-                resizeMode="cover"
-              />
-              <Text style={styles.categoryText}>{category.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Categories</Text>
+          
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            {CATEGORIES.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.categoryCard}
+                onPress={() => {
+                  router.push({
+                    pathname: '/events/category/[name]' as any,
+                    params: { name: category.name.replace('\n', ' ') }
+                  });
+                }}
+              >
+                <Image 
+                  source={{ uri: category.image }} 
+                  style={styles.categoryImage}
+                  resizeMode="cover"
+                />
+                <Text style={styles.categoryText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#00853E',
+  },
   container: {
     flex: 1,
     backgroundColor: '#00853E',
+    paddingTop: 50, // Push content down from status bar
   },
   header: {
     fontSize: 24,
@@ -104,16 +112,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'hidden',
-    height: 100,
+    height: 160,
   },
   categoryImage: {
-    width: 120,
+    width: 180,
     height: '100%',
     backgroundColor: '#ddd',
   },
   categoryText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#000',
     paddingHorizontal: 20,

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEvents } from './_layout';
@@ -99,6 +100,7 @@ export default function SearchScreen() {
           headerBackTitleVisible: false,
         }}
       />
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
       <KeyboardAvoidingView 
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -154,14 +156,20 @@ export default function SearchScreen() {
           </View>
         )}
       </KeyboardAvoidingView>
+      </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    paddingTop: 50, // Push content down from status bar
   },
   searchContainer: {
     flexDirection: 'row',

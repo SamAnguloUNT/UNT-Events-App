@@ -158,12 +158,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
+      },
   errorText: {
     fontSize: 18,
     color: '#666',
     textAlign: 'center',
-    marginTop: 50,
+    marginTop: 10,
   },
   headerButton: {
     marginRight: 15,

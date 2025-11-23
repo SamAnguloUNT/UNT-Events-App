@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -41,7 +42,8 @@ export default function CalendarScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
+      <View style={styles.container}>
       {/* Search and Filter Buttons */}
       <View style={styles.topButtons}>
         <TouchableOpacity 
@@ -120,13 +122,19 @@ export default function CalendarScreen() {
         )}
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#00853E',
+  },
   container: {
     flex: 1,
     backgroundColor: '#00853E',
+    paddingTop: 5, // Push content down from status bar
   },
   topButtons: {
     flexDirection: 'row',
