@@ -1,8 +1,11 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEvents } from '../_layout';
 
 export default function LinkedEmailScreen() {
+  const { user } = useEvents();
+
   return (
     <>
       <Stack.Screen
@@ -17,7 +20,7 @@ export default function LinkedEmailScreen() {
       <ScrollView style={styles.container}>
         <View style={styles.card}>
           <Text style={styles.title}>Your Linked Email</Text>
-          <Text style={styles.email}>your.name@my.unt.edu</Text>
+          <Text style={styles.email}>{user?.email || 'No email linked'}</Text>
           <Text style={styles.text}>
             This email is used for account access and notifications. To change
             your linked email, please contact UNT IT support or update your
