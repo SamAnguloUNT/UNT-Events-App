@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useEvents } from '../_layout';
 import { logOut } from '@/services/authService';
+import { sendTestNotification } from '@/services/notificationService';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -32,7 +33,6 @@ const SettingsItem = ({ icon, title, onPress }: SettingsItemProps) => (
 export default function SettingsScreen() {
   const router = useRouter();
   const { user } = useEvents();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const handleLogout = async () => {
     Alert.alert(
@@ -98,55 +98,24 @@ export default function SettingsScreen() {
       {/* Notifications Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Notifications</Text>
-        <View style={styles.notificationToggle}>
-          <View style={styles.toggleLeft}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="notifications-outline" size={20} color="#000" />
-            </View>
-            <Text style={styles.settingsText}>
-              Notifications {notificationsEnabled ? 'On' : 'Off'}
-            </Text>
-          </View>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={(value) => {
-              if (value) {
-                Alert.alert(
-                  'Enable Notifications',
-                  'You will receive notifications about upcoming events, reminders, and club updates.',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Enable',
-                      onPress: () => setNotificationsEnabled(true),
-                    },
-                  ]
-                );
-              } else {
-                Alert.alert(
-                  'Disable Notifications',
-                  'You will no longer receive notifications about events. You can turn them back on anytime.',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Disable',
-                      style: 'destructive',
-                      onPress: () => setNotificationsEnabled(false),
-                    },
-                  ]
-                );
-              }
-            }}
-            trackColor={{ false: '#fff', true: '#000' }}
-            thumbColor={notificationsEnabled ? '#fff' : '#666'}
-          />
-        </View>
+        
+        <SettingsItem
+          icon="notifications-outline"
+          title="Notification Settings"
+          onPress={() => router.push('/settings/notification-preferences')}
+        />
+
+        {/* Test Notification Button */}
+        <TouchableOpacity
+          style={styles.testNotificationButton}
+          onPress={async () => {
+            await sendTestNotification();
+            Alert.alert('Test Sent!', 'Check your notifications');
+          }}
+        >
+          <Ionicons name="notifications-outline" size={20} color="#00853E" />
+          <Text style={styles.testNotificationText}>Send Test Notification</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Support Section */}
@@ -274,6 +243,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#fff',
+  },
+  testNotificationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#00853E',
+    borderRadius: 8,
+    padding: 14,
+    marginTop: 10,
+    gap: 8,
+  },
+  testNotificationText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#00853E',
   },
   logoutButton: {
     flexDirection: 'row',

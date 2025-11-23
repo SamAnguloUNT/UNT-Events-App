@@ -2,8 +2,13 @@ import { Stack } from 'expo-router';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/config/firebase';
-import { getUserSavedEvents, saveEventToUser, removeEventFromUser } from '@/services/databaseService';
+import { getUserSavedEvents, saveEventToUser, removeEventFromUser, getUserPreferences } from '@/services/databaseService';
 import { UNT_EVENTS } from '@/data/events';
+import { 
+  registerForPushNotificationsAsync, 
+  scheduleEventNotification,
+  cancelAllEventNotifications 
+} from '@/services/notificationService';
 
 // Event type
 interface Event {
@@ -26,6 +31,7 @@ interface EventsContextType {
   isEventSaved: (eventId: string) => boolean;
   user: User | null;
   loading: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 const EventsContext = createContext<EventsContextType>({
@@ -34,6 +40,7 @@ const EventsContext = createContext<EventsContextType>({
   isEventSaved: () => false,
   user: null,
   loading: true,
+  refreshUser: async () => {},
 });
 
 export const useEvents = () => useContext(EventsContext);
@@ -42,6 +49,11 @@ export default function RootLayout() {
   const [savedEvents, setSavedEvents] = useState<Event[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Request notification permissions on app load
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   // Listen to authentication state changes
   useEffect(() => {
@@ -77,6 +89,9 @@ export default function RootLayout() {
       // Remove event
       setSavedEvents(savedEvents.filter(e => e.id !== event.id));
       
+      // Cancel notifications for this event
+      await cancelAllEventNotifications(event.id);
+      
       // If user is logged in, update Firebase
       if (user) {
         await removeEventFromUser(user.uid, event.id);
@@ -84,6 +99,30 @@ export default function RootLayout() {
     } else {
       // Add event
       setSavedEvents([...savedEvents, event]);
+      
+      // Get user's notification preference (default 15 minutes)
+      let notificationTime = 15; // Default
+      if (user) {
+        const prefsResult = await getUserPreferences(user.uid);
+        if (prefsResult.success && prefsResult.preferences?.notificationTime) {
+          notificationTime = prefsResult.preferences.notificationTime;
+        }
+      }
+      
+      console.log('Scheduling notification for:', event.title);
+      console.log('Time before event:', notificationTime, 'minutes');
+      console.log('Event date:', event.date, 'Event time:', event.time);
+      
+      // Schedule notification with user's preferred time
+      const notificationId = await scheduleEventNotification(
+        event.title,
+        event.date,
+        event.time,
+        event.id,
+        notificationTime
+      );
+      
+      console.log('Notification ID:', notificationId);
       
       // If user is logged in, update Firebase
       if (user) {
@@ -96,6 +135,13 @@ export default function RootLayout() {
     return savedEvents.some(event => event.id === eventId);
   };
 
+  const refreshUser = async () => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      setUser(auth.currentUser);
+    }
+  };
+
   return (
     <EventsContext.Provider 
       value={{ 
@@ -103,7 +149,8 @@ export default function RootLayout() {
         toggleSaveEvent, 
         isEventSaved,
         user,
-        loading
+        loading,
+        refreshUser
       }}
     >
       <Stack>

@@ -8,6 +8,9 @@ export default function SettingsLayout() {
       <Stack.Screen name="linked-email" />
       <Stack.Screen name="change-password" />
 
+      {/* Notification screens */}
+      <Stack.Screen name="notification-preferences" />
+
       {/* Support screens */}
       <Stack.Screen name="faqs" />
       <Stack.Screen name="contact" />

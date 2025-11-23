@@ -1,18 +1,95 @@
-import { Stack } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import React, { useState, useEffect } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { useEvents } from '../_layout';
+import { updateProfile } from 'firebase/auth';
+import { updateUserProfile, getUserProfile } from '@/services/databaseService';
 
 export default function EditProfileScreen() {
+  const router = useRouter();
+  const { user, refreshUser } = useEvents();
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
+  // Load current user data when screen opens
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (user) {
+        // Set name from Firebase Auth
+        setName(user.displayName || '');
+        
+        // Load bio from Firestore
+        const result = await getUserProfile(user.uid);
+        if (result.success && result.profile?.bio) {
+          setBio(result.profile.bio);
+        }
+      }
+      setLoading(false);
+    };
+    
+    loadUserData();
+  }, [user]);
+
+  const handleSave = async () => {
     if (!name.trim()) {
       Alert.alert('Error', 'Please enter your name');
       return;
     }
-    Alert.alert('Profile Updated', 'Your changes have been saved.');
+
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to update your profile');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      // Update display name in Firebase Auth
+      await updateProfile(user, {
+        displayName: name.trim()
+      });
+
+      // Reload user to get fresh data
+      await user.reload();
+
+      // Update bio in Firestore
+      await updateUserProfile(user.uid, {
+        bio: bio.trim(),
+        displayName: name.trim()
+      });
+
+      // Refresh user in context to update UI everywhere
+      await refreshUser();
+
+      Alert.alert('Success', 'Your profile has been updated!');
+      router.back();
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: 'Edit Profile',
+            headerStyle: { backgroundColor: '#00853E' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      </>
+    );
+  }
 
   return (
     <>
@@ -32,6 +109,7 @@ export default function EditProfileScreen() {
             value={name}
             onChangeText={setName}
             placeholder="Enter your name"
+            placeholderTextColor="#999"
           />
 
           <Text style={styles.label}>Bio</Text>
@@ -40,11 +118,21 @@ export default function EditProfileScreen() {
             value={bio}
             onChangeText={setBio}
             placeholder="Tell us about yourself"
+            placeholderTextColor="#999"
             multiline
+            textAlignVertical="top"
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Save Changes</Text>
+          <TouchableOpacity 
+            style={[styles.button, saving && styles.buttonDisabled]} 
+            onPress={handleSave}
+            disabled={saving}
+          >
+            {saving ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Save Changes</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -53,7 +141,10 @@ export default function EditProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#00853E' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#00853E' 
+  },
   card: {
     backgroundColor: '#fff',
     margin: 16,
@@ -62,7 +153,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#000',
   },
-  label: { fontWeight: '600', marginBottom: 8, color: '#000' },
+  label: { 
+    fontWeight: '600', 
+    marginBottom: 8, 
+    color: '#000',
+    fontSize: 16,
+  },
   input: {
     backgroundColor: '#f5f5f5',
     borderWidth: 2,
@@ -71,6 +167,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     marginBottom: 20,
+    color: '#000',
   },
   button: {
     backgroundColor: '#00853E',
@@ -80,5 +177,12 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
   },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: { 
+    color: '#fff', 
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
