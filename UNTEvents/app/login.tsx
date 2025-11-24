@@ -182,17 +182,18 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Changed from 'center' to 'flex-start'
     paddingHorizontal: 30,
+    paddingTop: 30, // Added top padding to move content up
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
   },
   logo: {
-    width: 350,
-    height: 250,
-    marginBottom: 20,
+    width: 400, // Bigger logo
+    height: 280, // Bigger logo
+    marginBottom: 15,
   },
   subtitle: {
     fontSize: 16,
