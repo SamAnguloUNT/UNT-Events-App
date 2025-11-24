@@ -60,7 +60,7 @@ export const getUserSavedEvents = async (userId: string) => {
   }
 };
 
-// Save user preferences
+// Save user preferences (overwrites entire preferences object)
 export const saveUserPreferences = async (userId: string, preferences: any) => {
   try {
     const userRef = doc(db, 'users', userId);
@@ -72,6 +72,32 @@ export const saveUserPreferences = async (userId: string, preferences: any) => {
     return { success: true };
   } catch (error: any) {
     console.error('Save preferences error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Update specific user preference fields (merges with existing preferences)
+export const updateUserPreferences = async (userId: string, preferenceUpdates: any) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    
+    // Get current preferences
+    const userDoc = await getDoc(userRef);
+    const currentPreferences = userDoc.exists() ? userDoc.data()?.preferences || {} : {};
+    
+    // Merge new preferences with existing ones
+    const updatedPreferences = {
+      ...currentPreferences,
+      ...preferenceUpdates
+    };
+    
+    await setDoc(userRef, {
+      preferences: updatedPreferences
+    }, { merge: true });
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error('Update preferences error:', error);
     return { success: false, error: error.message };
   }
 };

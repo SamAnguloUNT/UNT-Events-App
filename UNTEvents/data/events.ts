@@ -244,7 +244,7 @@ export const UNT_EVENTS: Event[] = [
     id: '20',
     title: 'UNT Men\'s Basketball at South Alabama',
     date: '2025-12-14',
-    time: '4:30 PM',
+    time: '11:52 PM',
     location: 'Mobile, AL',
     description: 'The Mean Green Men\'s Basketball team travels to Mobile, Alabama to take on South Alabama in an exciting road game. Can\'t make it? Watch the live stream and cheer on the team from Denton!',
     category: 'Sports',

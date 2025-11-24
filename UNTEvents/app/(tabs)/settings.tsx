@@ -105,7 +105,7 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/notification-preferences')}
         />
 
-        {/* Test Notification Button */}
+         {/* Test Notification Button */}
         <TouchableOpacity
           style={styles.testNotificationButton}
           onPress={async () => {
