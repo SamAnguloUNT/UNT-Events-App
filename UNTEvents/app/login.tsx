@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   logo: {
-    width: 250,
-    height: 150,
+    width: 350,
+    height: 250,
     marginBottom: 20,
   },
   subtitle: {

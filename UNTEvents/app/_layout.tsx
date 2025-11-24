@@ -20,8 +20,8 @@ interface Event {
   description: string;
   category: string;
   image: string;
-  organizer: string;
-  contactEmail: string;
+  organizer?: string;
+  contactEmail?: string;
 }
 
 // Context type
@@ -153,15 +153,18 @@ export default function RootLayout() {
         refreshUser
       }}
     >
-      <Stack>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="event/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="events/current" options={{ headerShown: false }} />
-        <Stack.Screen name="events/planned" options={{ headerShown: false }} />
-        <Stack.Screen name="events/categories" options={{ headerShown: false }} />
-        <Stack.Screen name="events/category/[name]" options={{ headerShown: false }} />
-        <Stack.Screen name="search" options={{ headerShown: false }} />
+      <Stack 
+        screenOptions={{ 
+          headerBackTitle: 'Back',
+          headerStyle: { backgroundColor: '#00853E' },
+          headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
+      >
+        <Stack.Screen 
+          name="(tabs)" 
+          options={{ headerShown: false }} 
+        />
       </Stack>
     </EventsContext.Provider>
   );

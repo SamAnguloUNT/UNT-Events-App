@@ -29,7 +29,7 @@ export default function PlannedEventsScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackTitleVisible: false,
+          headerBackTitle: 'Back',
         }}
       />
       <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#00853E',
-    paddingTop: 50, // Push content down from status bar
   },
   scrollView: {
     flex: 1,

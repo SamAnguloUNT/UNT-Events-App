@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
-export default function LocationServicesScreen() {   // 👈 default export
+export default function LocationServicesScreen() {
   const [enabled, setEnabled] = useState(false);
 
   const toggle = (value: boolean) => {
@@ -18,6 +18,7 @@ export default function LocationServicesScreen() {   // 👈 default export
           headerStyle: { backgroundColor: '#00853E' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
+          headerBackTitle: 'Back',
         }}
       />
       <ScrollView style={styles.container}>

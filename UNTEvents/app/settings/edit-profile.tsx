@@ -99,6 +99,7 @@ export default function EditProfileScreen() {
           headerStyle: { backgroundColor: '#00853E' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
+          headerBackTitleVisible: false,
         }}
       />
       <ScrollView style={styles.container}>

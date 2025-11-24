@@ -61,7 +61,7 @@ export default function EventDetailsScreen() {
             backgroundColor: '#00853E',
           },
           headerTintColor: '#fff',
-          headerBackTitleVisible: false,
+          headerBackTitle: 'Back',
           headerRight: () => (
             <TouchableOpacity onPress={handleShare} style={styles.headerButton}>
               <Ionicons name="share-outline" size={24} color="#fff" />

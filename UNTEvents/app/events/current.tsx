@@ -37,7 +37,7 @@ export default function CurrentEventsScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackTitleVisible: false,
+          headerBackTitle: 'Back',
         }}
       />
       <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#00853E',
-    paddingTop: 50,
   },
   header: {
     fontSize: 24,

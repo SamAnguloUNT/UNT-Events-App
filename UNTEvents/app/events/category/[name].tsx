@@ -107,7 +107,7 @@ export default function CategoryDetailScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackTitleVisible: false,
+          headerBackTitle: 'Back',
         }}
       />
       <View style={styles.container}>

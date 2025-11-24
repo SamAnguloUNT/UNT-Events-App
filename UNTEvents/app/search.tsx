@@ -97,7 +97,7 @@ export default function SearchScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackTitleVisible: false,
+          headerBackTitle: 'Back',
         }}
       />
       <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
@@ -169,7 +169,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    paddingTop: 50, // Push content down from status bar
   },
   searchContainer: {
     flexDirection: 'row',
